@@ -1,4 +1,4 @@
-# TSQL Homework 02c
+# TSQL Homework 03
 
 ---
 Dakin Werneburg  
@@ -6,47 +6,62 @@ Dakin Werneburg  
 
 ---
 
-1. List the date/time types in T-SQL.
-> - **time**
-> - **date**
-> - **smalldatetime**
-> - **datetime**
-> - **datetime2**
-> - **datetimeoffset**
+1. In general, why would you even want to join two (or more) tables together? This is a good time to think about the nature of relational algebra.
+> - ** To merge data from two or more tables into one.**
 
-1. How do you express a date/time literal in T-SQL?
-> - **T-SQL doesn’t provide the means to express a date and time literal, but express data and times  using character-string literals and coverting them to date time data types instead**
 
-1. What is the setting DATEFORMAT used for?
-> - **Determins how SQL Server interprets the literals you enter when they are converted from character-string type to a date time type. i.e (d,m,y) us_english**
+1. Describe in your own words the output from an inner join.
+> - **The output from an inner join combines the rows that match both tables, based on the predicate and discard those that do not match.**
 
-1. Write a T-SQL snippet changing the date format to German. Read the documentation on how to do this.
-> - **SET LANGUAGE German;**
 
-1. What is the difference between CAST(), CONVERT(), and PARSE()?
-> - **CAST is part of the ANSI-SQL specification and is standard providing my compatability, wheras CONVERT AND PARSE are not; CONVERT() supports the style argument that allow formatting, where as CAST and PARSE don't.  PARSE requires the .NET framework where as CAST and CONVERT do not.  PARSE also accepts only strings and converts to datetime and number formats only where as CAST and CONVERT accept any input and can convert between any data type.**
+1. Describe in your own words the output from an outer join.
+> - **Output of the outer joins produces all the tables from the first one and the keeps unmatched rows of the other and fills them with null values.**
 
-1. What function returns the current date? This is very useful in a table that maintains a log of events, such as user logins.
-> - **There are six functions to retrieve the current date and time: GETDATE, CURRENT_TIMESTAMP, GETUTCDATE, SYSDATETIME, SYSUTCDATETIME,and SYSDATETIMEOFFSET, but GETDATE is normally used.
+1. Describe in your own words the output from an cross join.  
+> - **The output is one big list with every possible combination of each table joined into one.  A big mess.**
 
-1. How do you add one day to the current date? Add one week? Add one month? Add one year?
-> - **Utilizing the DATEADD function with the specified parameters.  
->> - SELECT DATEADD(day,1,GETDATE());
->> - SELECT DATEADD(week,1,GETDATE());
->> - SELECT DATEADD(month,1,GETDATE());
->> - SELECT DATEADD(year,1,GETDATE());
 
-1. Write a SQL snippet to return the number of years between your birth date and today’s date.
-> - **SELECT DATEDIFF(year,'19770520',GETDATE());
+1. A convenient mnemonic for remembering the various joins is "Ohio." Why is this true?
+> - **I could not find any literature on this, but my guess it stands for Outer Has Inner's Outer.????.
 
-1. How do you check a string literal to see if it represents a valid date?
-> - **Using the ISDATE() function.
 
-1. What does EOMONTH() do? Give an example of why this might be very useful.
-> - **EOMONTH() fucntion returns the last day of the month.  This couuld be used to calculate maturity dates or due dates**
+1. Give an example of a composite join.
 
-1. Payments are due exactly 30 days from the date of the last function. Write a select query that calculates the date of the next payment. Pretend we want to update a column in a database that contains the date of the next payment. We will do this when we write UPDATE queries.
-> - **SELECT DATEADD(day,30,'paymentdate' AS "Due Date");  // paymentdate uknown
+> - **Returns all orderid, the name of the employees that sold had items shipped to thier same home town of London.
 
-1. Suppose your son or daughter wants to run a query every day that tells them the number of days until their 16th birthday. Write a select query that does this.
-> -  **SELECT DATEDIFF(day,GETDATE(),'20210216');  //unknown month of 16th birthday**
+> - **SELECT O.orderid, E.lastname, E.firstname, O.shipcity FROM orders AS O INNER JOIN employees AS E on O.employeeid = E.employeeid and O.shipcity = E.city WHERE O.shipcity ='London';**
+
+
+1. What is the diference between the following two queries? The business problem is "How many orders do we have from each customer?"  
+
+	```sql
+    ================first query===============
+    SELECT C.custid, COUNT(*) AS numorders
+    FROM Sales.Customers AS C
+    LEFT OUTER JOIN Sales.Orders AS O
+    ON C.custid = O.custid
+    GROUP BY C.custid;
+    ================second query===============
+    SELECT C.custid, COUNT(O.orderid) AS numorders
+	FROM Sales.Customers AS C
+	LEFT OUTER JOIN Sales.Orders AS O
+	ON C.custid = O.custid
+	GROUP BY C.custid;
+	```	
+	
+> - **The first one will count all the rows return where both the orders table and the cutomer table have the same custid which might misrepresent the actual number of orders, whereas the second is the right one that returns the number of orders that the customer placed.**
+
+
+1. What might be one reason the following query does not return the column custID in this query?  
+	```sql
+	SELECT C.custid, C.companyname, O.orderid, O.orderdate
+	FROM Sales.Customers AS C
+	LEFT OUTER JOIN Sales.Orders AS O
+	ON C.custid = O.custid
+	WHERE O.orderdate >= '20160101';
+	```
+	
+> - **This customer didn't place any order on January 1, 2016"
+
+
+
