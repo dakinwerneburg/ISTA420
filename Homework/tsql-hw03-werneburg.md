@@ -1,7 +1,7 @@
 # TSQL Homework 03
 
 ---
-Dakin Werneburg  
+Dakin Werneburg  
 1/24/2021
 
 ---
@@ -34,7 +34,7 @@ Dakin Werneburg  
 
 1. What is the diference between the following two queries? The business problem is "How many orders do we have from each customer?"  
 
-	```sql
+    ```sql
     ================first query===============
     SELECT C.custid, COUNT(*) AS numorders
     FROM Sales.Customers AS C
@@ -43,25 +43,22 @@ Dakin Werneburg  
     GROUP BY C.custid;
     ================second query===============
     SELECT C.custid, COUNT(O.orderid) AS numorders
-	FROM Sales.Customers AS C
-	LEFT OUTER JOIN Sales.Orders AS O
-	ON C.custid = O.custid
-	GROUP BY C.custid;
-	```	
-	
+    FROM Sales.Customers AS C
+    LEFT OUTER JOIN Sales.Orders AS O
+    ON C.custid = O.custid
+    GROUP BY C.custid;
+    ```    
+    
 > - **The first one will count all the rows return where both the orders table and the cutomer table have the same custid which might misrepresent the actual number of orders, whereas the second is the right one that returns the number of orders that the customer placed.**
 
 
 1. What might be one reason the following query does not return the column custID in this query?  
-	```sql
-	SELECT C.custid, C.companyname, O.orderid, O.orderdate
-	FROM Sales.Customers AS C
-	LEFT OUTER JOIN Sales.Orders AS O
-	ON C.custid = O.custid
-	WHERE O.orderdate >= '20160101';
-	```
-	
+    ```sql
+    SELECT C.custid, C.companyname, O.orderid, O.orderdate
+    FROM Sales.Customers AS C
+    LEFT OUTER JOIN Sales.Orders AS O
+    ON C.custid = O.custid
+    WHERE O.orderdate >= '20160101';
+    ```
+    
 > - **This customer didn't place any order on January 1, 2016"
-
-
-
