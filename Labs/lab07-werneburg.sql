@@ -27,6 +27,7 @@ from dbo.orders;
 
 
 -- Desired output:
+/*
 custid orderid     qty         rnk                  drnk
 ------ ----------- ----------- -------------------- --------------------
 A      30001       10          1                    1
@@ -40,7 +41,7 @@ C      10006       14          1                    1
 C      20002       20          2                    2
 C      30004       22          3                    3
 D      30007       30          1                    1
-
+*/
 -- 2
 -- The following query against the Sales.OrderValues view returns
 -- distinct values and their associated row numbers
@@ -58,14 +59,17 @@ GROUP BY val;
 -- Can you think of an alternative way to achieve the same task?
 -- Tables involved: TSQLV4 database, Sales.OrderValues view
 
-with t as (
-select distinct val from sale.ordrsvalues)
+with t as 
+(
+	select distinct val from sales.ordervalues
+)
 select val,
 	row_number() over (order by val) as rownum,
-	rank() over (order by val) as rank-- window funciton
-	from t order by val
+	rank() over (order by val) as rank -- window funciton
+from t 
+order by val;
 
--- Desired output:
+/* Desired output:
 val       rownum
 --------- -------
 12.50     1
@@ -92,7 +96,7 @@ val       rownum
 --   and the customer's previous order quantity
 -- * the difference between the current order quantity
 --   and the customer's next order quantity.
-
+*/
 select custid, orderid, qty,
 --lag(qty) over (partition by custid order by orderdate, qty) as prev,
 qty - lag(qty) over (partition by custid order by orderdate, qty) as diffprev,
@@ -101,7 +105,7 @@ qty - lead(qty) over (partition by custid order by orderdate, qty) as diffnext
 from dbo.orders
 order by custid, orderdate;
 
--- Desired output:
+/*-- Desired output:
 custid orderid     qty         diffprev    diffnext
 ------ ----------- ----------- ----------- -----------
 A      30001       10          NULL        -2
@@ -115,7 +119,7 @@ C      30004       22          NULL        8
 C      10006       14          -8          -6
 C      20002       20          6           NULL
 D      30007       30          NULL        NULL
-
+*/
 -- 4
 -- Write a query against the dbo.Orders table that returns a row for each
 -- employee, a column for each order year, and the count of orders
