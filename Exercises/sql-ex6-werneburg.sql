@@ -291,9 +291,10 @@ ORDER BY Employee;
 
 --(d) Which orders have a value greater than $5,000?
 
-SELECT od.orderNumber, (od.quantityOrdered * od.priceEach) as SalePrice 
+SELECT od.orderNumber, SUM((od.quantityOrdered * od.priceEach)) as SalePrice 
 FROM ex06.dbo.OrderDetails od
 WHERE (od.quantityOrdered * od.priceEach) > 5000
+GROUP BY od.orderNumber
 ORDER BY SalePrice desc;
 
 
@@ -361,7 +362,7 @@ FROM ex06.dbo.Products p
 	INNER JOIN ex06.dbo.Orders o
 		on od.orderNumber = o.orderNumber
 WHERE p.productName = '1940 Ford Pickup Truck'
-ORDER BY o.orderDate;
+ORDER BY o.orderDate desc;
 
 
 --(l) List the names of customers and their corresponding order number where a particular order from
